@@ -75,7 +75,7 @@ export function sessionMiddleware<T>(options: SessionMiddlewareOptions): Request
     const onCloseTasks: Task[] = []
 
     req.on('close', () => {
-      if (req.session.isLockOwner) req.session.unlock().catch((err) => validatedOptions.onUnlockError(err, req))
+      if (req.session?.isLockOwner) req.session.unlock().catch((err) => validatedOptions.onUnlockError(err, req))
       if (!res.writableEnded) onCloseTasks.forEach(task => task.done())
     })
 
