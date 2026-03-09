@@ -190,7 +190,7 @@ export class Session<T> {
     injectTools(ctxNew)
 
     const newSession = new Session(ctxNew, rotatedRaw, this.#onDestroy, this.#onRotateId)
-    await newSession.save()
+    await this.#store.set(rotatedRaw.meta.id, rotatedRaw as SessionStoreData, this.#options.cookie.ttl)
 
     this.#redirectTo = newSession
     this.#tracking.proxy.data = newSession.data
