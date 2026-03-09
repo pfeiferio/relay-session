@@ -302,6 +302,28 @@ app.get('/profile', (req, res) => {
 
 `assertSession` is a no-op at runtime — it only narrows the TypeScript type.
 
+### Global Type Augmentation
+For a cleaner developer experience, you can define your session types globally. This removes the need to pass generics
+to sessionMiddleware or assertSession throughout your application:
+
+```typescript
+// types/session.d.ts
+declare module 'relay-session' {
+  interface SessionData {
+    userId: string;
+    role: 'admin' | 'user';
+    cart: { items: string[] };
+  }
+}
+
+// Now req.session.data is automatically typed
+app.get('/dashboard', (req, res) => {
+  if (req.session.data.role === 'admin') {
+    // ...
+  }
+});
+```
+
 ---
 
 ## Dirty Tracking
