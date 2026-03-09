@@ -539,10 +539,18 @@ describe('Session', () => {
       const store = createInMemoryStorage()
       const {mw} = createMiddleware({store, debug: (msg) => messages.push(msg)})
 
-      const req = makeReq()
-      await run(mw, req)
-      req.session.data.x = 1
-      await req.session.save()
+      // First request: create and persist the session (isNew → set)
+      const req1 = makeReq()
+      const {res: res1} = await run(mw, req1)
+      req1.session.data.x = 1
+      await req1.session.save()
+
+      // Second request: load existing session → save uses merge
+      const cookie = getCookieValue(res1)
+      const req2 = makeReq(cookie)
+      await run(mw, req2)
+      req2.session.data.x = 2
+      await req2.session.save()
 
       assert.ok(messages.some(m => m.includes('merge')), 'debug should log merge')
     })

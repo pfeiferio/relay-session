@@ -109,11 +109,12 @@ export class Session<T> {
     const changedPaths: Record<string, unknown> = {}
     dirty.forEach(path => changedPaths[path] = getValueByPath(this.#tracking.data, path))
 
-    if (this.#store.merge) {
+    const isNew = this.isNew
+
+    if (!isNew && this.#store.merge) {
       this.#ctx.debug?.(`save merge | id=${this.id}`)
       await this.#store.merge(this.id, changedPaths, this.#options.cookie.ttl)
     } else {
-      const isNew = this.isNew
       this.#ctx.debug?.(`save set | id=${this.id} isNew=${isNew}`)
       const stored =
         (isNew ?
