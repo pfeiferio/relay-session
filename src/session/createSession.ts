@@ -3,7 +3,7 @@ import {setSessionCookie} from "../utils/setSessionCookie.js";
 import {Session} from "./Session.js";
 import {createSessionRawData, generateId} from "./utils.js";
 
-export const createSession = <T>(
+export const createSession = <T extends Record<string, unknown>>(
   ctx: SessionContext,
   data: SessionRawData<T>,
 ): Session<T> => {

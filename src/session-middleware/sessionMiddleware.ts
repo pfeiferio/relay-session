@@ -10,7 +10,7 @@ import {createSession} from "../session/createSession.js";
 import type {Task} from 'request-drain'
 import {injectTools} from "../utils/injectTools.js";
 
-export function sessionMiddleware<T>(options: SessionMiddlewareOptions): RequestHandler {
+export function sessionMiddleware<T extends Record<string, unknown>>(options: SessionMiddlewareOptions): RequestHandler {
 
   const validatedOptions = validateOptions(options, getDefaultOptions())
   const shutdownHandle = validatedOptions.shutdown.registry?.register()

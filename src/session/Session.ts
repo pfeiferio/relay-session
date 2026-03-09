@@ -12,7 +12,7 @@ import {createSessionRawData, generateId, updatePreviousSession} from "./utils.j
 import {tryLock, waitForUnlock} from "./lock-utils.js";
 import {injectTools} from "../utils/injectTools.js";
 
-export class Session<T> {
+export class Session<T extends Record<string, unknown>> {
 
   readonly #tracking: ProxyWithTracking<SessionRawData<T>>
   readonly #store: SessionStoreAdapter
@@ -70,6 +70,10 @@ export class Session<T> {
 
   get data() {
     return this.#tracking.proxy.data
+  }
+
+  set data(value: T) {
+    this.#tracking.proxy.data = value ?? {} as T
   }
 
   get #meta(): SessionMeta {

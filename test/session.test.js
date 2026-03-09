@@ -521,6 +521,32 @@ describe('Session', () => {
   })
 
   // ─────────────────────────────────────────────
+  describe('data setter', () => {
+    it('replaces the entire data object and marks it dirty', async () => {
+      const {mw} = createMiddleware()
+      const req = makeReq()
+      await run(mw, req)
+
+      req.session.data = {foo: 'bar'}
+
+      assert.deepStrictEqual(req.session.data.foo, 'bar')
+      assert.ok(req.session.getDirtyPaths().size > 0, 'should have dirty paths after data assignment')
+    })
+
+    it('falls back to {} when assigned null or undefined', async () => {
+      const {mw} = createMiddleware()
+      const req = makeReq()
+      await run(mw, req)
+
+      req.session.data = null
+      assert.deepStrictEqual(req.session.data, {})
+
+      req.session.data = undefined
+      assert.deepStrictEqual(req.session.data, {})
+    })
+  })
+
+  // ─────────────────────────────────────────────
   describe('debug option', () => {
     it('calls debug for save (non-merge store)', async () => {
       const messages = []
