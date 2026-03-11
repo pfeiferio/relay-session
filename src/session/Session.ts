@@ -88,6 +88,10 @@ export class Session<T extends Record<string, unknown>> {
     return this.#tracking.getDirtyPaths()
   }
 
+  async isLocked(): Promise<boolean> {
+    return this.#store.isLocked?.(this.id) ?? false
+  }
+
   async save(): Promise<void> {
     !this.#isLockOwner && await waitForUnlock(this.#store, this.id, this.#ctx.options.lock)
 

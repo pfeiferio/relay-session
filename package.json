@@ -1,6 +1,6 @@
 {
   "name": "relay-session",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "TypeScript-first session middleware for Express with session rotation, locking and pluggable stores.",
   "license": "MIT",
   "author": "Pascal Pfeifer <pascal@pfeifer.zone>",

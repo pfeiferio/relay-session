@@ -546,6 +546,60 @@ describe('Session', () => {
     })
   })
 
+  describe('isLocked()', () => {
+    it('returns true when store.isLocked resolves to true', async () => {
+      const store = {
+        get: async () => null,
+        set: async () => {},
+        delete: async () => {},
+        lock: async () => true,
+        unlock: async () => {},
+        isLocked: async () => true,
+      }
+      const mw = sessionMiddleware({
+        cookie: {name: COOKIE_NAME, secret: SECRET, ttl: TTL, secure: false, sameSite: 'lax', httpOnly: false},
+        store,
+        rolling: false,
+        autoSave: false,
+        onBrokenChain: (_req, res) => res.status(410).json({}),
+      })
+      const req = makeReq()
+      await run(mw, req)
+
+      assert.strictEqual(await req.session.isLocked(), true)
+    })
+
+    it('returns false when store.isLocked resolves to false', async () => {
+      const store = {
+        get: async () => null,
+        set: async () => {},
+        delete: async () => {},
+        lock: async () => true,
+        unlock: async () => {},
+        isLocked: async () => false,
+      }
+      const mw = sessionMiddleware({
+        cookie: {name: COOKIE_NAME, secret: SECRET, ttl: TTL, secure: false, sameSite: 'lax', httpOnly: false},
+        store,
+        rolling: false,
+        autoSave: false,
+        onBrokenChain: (_req, res) => res.status(410).json({}),
+      })
+      const req = makeReq()
+      await run(mw, req)
+
+      assert.strictEqual(await req.session.isLocked(), false)
+    })
+
+    it('returns false when store has no isLocked method', async () => {
+      const {mw} = createMiddleware()  // makeSimpleStore has no isLocked
+      const req = makeReq()
+      await run(mw, req)
+
+      assert.strictEqual(await req.session.isLocked(), false)
+    })
+  })
+
   // ─────────────────────────────────────────────
   describe('debug option', () => {
     it('calls debug for save (non-merge store)', async () => {
