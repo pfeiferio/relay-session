@@ -28,6 +28,7 @@ export {
 
 // Public types
 export type {
+  SessionData,
   SessionMiddlewareOptions,
   SessionCookieOptions,
   SessionRotationOptions,

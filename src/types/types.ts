@@ -140,3 +140,6 @@ export type SessionRedirectData = {
   }
   data: null
 }
+
+export interface SessionData extends Record<string, unknown> {
+}
